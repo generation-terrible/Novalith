@@ -1,0 +1,64 @@
+# Base image with Node.js
+FROM node:20-alpine AS base
+
+# Installer pnpm globalement
+RUN npm install -g pnpm
+
+# Install dependencies only when needed
+FROM base AS deps
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+
+# Copier package.json et pnpm-lock.yaml
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+
+# Installer les dépendances
+RUN pnpm install
+
+# Build application
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+# Set SITE_URL for sitemap generation
+ENV SITE_URL=${SITE_URL}
+ENV NODE_ENV=${NODE_ENV}
+
+# Build sans génération du sitemap
+RUN NEXT_TELEMETRY_DISABLED=1 pnpm run build
+
+# Production image
+FROM base AS runner
+WORKDIR /app
+
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+
+# Pas besoin de créer un nouvel utilisateur, on utilise "node" fourni par l'image
+# Create necessary directories with correct permissions
+RUN mkdir -p /app/.next/cache /app/public && \
+    chown -R node:node /app
+
+# Copy necessary files with correct ownership
+COPY --from=builder --chown=node:node /app/node_modules ./node_modules
+COPY --from=builder --chown=node:node /app/next-sitemap.config.js ./
+COPY --from=builder --chown=node:node /app/package.json ./
+COPY --from=builder --chown=node:node /app/public ./public
+COPY --from=builder --chown=node:node /app/.next/standalone ./
+COPY --from=builder --chown=node:node /app/.next/static ./.next/static
+COPY --chown=node:node scripts/start.sh /app/start.sh
+
+# Set more restrictive permissions
+RUN chmod 755 /app && \
+    chmod 644 next-sitemap.config.js package.json && \
+    chmod -R 755 public node_modules .next && \
+    chmod 755 /app/start.sh
+
+USER node
+
+EXPOSE 3001
+ENV PORT=3001
+
+CMD ["/app/start.sh"]
