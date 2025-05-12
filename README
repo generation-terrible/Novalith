@@ -18,4 +18,6 @@ Boilerplate for Next.js with Pnpm, Tailwind, Docker, Prisma, PostgreSQL, ProxyMa
 
 9. Access your app on your virtual host url or port localhost:3001
 
+10. To see prisma structure run "npx prisma studio" in Nextjs container and go on url localhost:5555
+
 ## First connexion
