@@ -1,3 +1,21 @@
 Boilerplate for Next.js with Pnpm, Tailwind, Docker, Prisma, PostgreSQL, ProxyManager, and TypeScript.
 
-Change the name of every folder to your project name.
+1. Clone the repository
+
+2. Create a .env file in boilerplate-proxy and boilerplate-next based on the .env.example file.
+
+3. Change all "boilerplate" occurences to your project name.
+
+4. Create network "nameofyourapp-proxy"
+
+5. Run `docker compose up --build` in proxy folder
+
+6. Generate cert and add virtual host to your etc/hosts
+
+7. add your host to npm-proxy-manager on url localhost:81
+
+8. run `docker compose up --build` in next folder
+
+9. Access your app on your virtual host url or port localhost:3001
+
+## First connexion
