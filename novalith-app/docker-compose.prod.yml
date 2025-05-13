@@ -7,7 +7,7 @@ services:
       dockerfile: $DOCKERFILE
     container_name: ${NEXTJS_CONTAINER_NAME}
     ports:
-      - "${APP_PORT}:3001"
+      - "${APP_PORT}:3000"
     networks:
       - ${PROXY_NETWORK_NAME}
     environment:
@@ -16,5 +16,5 @@ services:
     user: "node"
 
 networks:
-  ${PROXY_NETWORK_NAME}:
+  novalith-proxy:
     external: true

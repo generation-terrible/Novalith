@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "prisma migrate dev --name init && next dev --turbopack --port 3001",
+    "dev": "prisma migrate dev --name init && next dev --turbopack ",
     "build": "next build",
-    "start": "prisma migrate deploy && next start --port 3001",
+    "start": "prisma migrate deploy && next start ",
     "lint": "next lint",
     "migrate": "prisma migrate dev --name init",
     "postbuild": "echo ' Starting sitemap generation...' && NODE_ENV=production next-sitemap --debug && echo '✅ Sitemap generation completed' && ls -la public/"
