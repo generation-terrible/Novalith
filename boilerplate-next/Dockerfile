@@ -17,6 +17,9 @@ RUN pnpm install
 # Copier le reste du code de l'application
 COPY . .
 
+# Générer le client Prisma
+RUN pnpm exec prisma generate
+
 # Build de l'application Next.js
 RUN pnpm run build
 
